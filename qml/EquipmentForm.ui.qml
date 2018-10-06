@@ -57,6 +57,9 @@ Page {
         Button {
             id: button
             text: qsTr("Add machine")
+            onClicked: {
+		stackView.push("NewEquipmentForm.ui.qml")
+	    }
         }
     }
 }

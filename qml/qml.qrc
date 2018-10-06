@@ -6,6 +6,7 @@
         <file>EquipmentForm.ui.qml</file>
         <file>FlowsForm.ui.qml</file>
         <file>RunForm.ui.qml</file>
+        <file>NewEquipmentForm.ui.qml</file>
         <file>qtquickcontrols2.conf</file>
     </qresource>
 </RCC>
