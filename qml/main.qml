@@ -39,18 +39,26 @@ ApplicationWindow {
 			anchors.fill: parent
 			
 			ItemDelegate {
-				text: qsTr("Page 1")
+				text: qsTr("Equipment")
 				width: parent.width
 				onClicked: {
-					stackView.push("Page1Form.ui.qml")
+					stackView.push("equipment.ui.qml")
 					drawer.close()
 				}
 			}
 			ItemDelegate {
-				text: qsTr("Page 2")
+				text: qsTr("Flows")
 				width: parent.width
 				onClicked: {
-					stackView.push("Page2Form.ui.qml")
+					stackView.push("flows.ui.qml")
+					drawer.close()
+				}
+			}
+			ItemDelegate {
+				text: qsTr("Run")
+				width: parent.width
+				onClicked: {
+					stackView.push("run.ui.qml")
 					drawer.close()
 				}
 			}
