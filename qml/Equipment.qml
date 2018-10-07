@@ -32,7 +32,14 @@ Rectangle {
 					text: name
 					width: 100
 				}
-				Text { text: type }
+				Text {
+					text: category
+					width: 100
+				}
+				Text {
+					text: location 
+					width: 100
+				}
 			}
 		}
 	}

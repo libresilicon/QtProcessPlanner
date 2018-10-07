@@ -51,13 +51,13 @@ Rectangle {
                         verticalAlignment: Text.AlignVCenter
                     }
 
-                    TextField {
+                    ComboBox {
                         id: equipmentCategory
                         width: 160
                         height: 30
-                        text: qsTr("")
                         clip: false
                         font.pixelSize: 10
+			model: equipmentCategoryModel
                         background: Rectangle {
                             radius: 2
                             implicitWidth: 100
@@ -66,7 +66,16 @@ Rectangle {
                             border.color: "black"
                         }
                     }
+		Button {
+                    height: 30
+		    text: qsTr("Add categories")
+		    onClicked: {
+				stackView.push("NewEquipmentCategoryForm.ui.qml")
+		    }
+
+        }
                 }
+
                 RowLayout {
             	    Layout.fillWidth: true
                     height: 27
@@ -95,13 +104,14 @@ Rectangle {
                     }
                 }
         Button {
-            id: button
+            height: 30
             text: qsTr("Save")
             onClicked: {
 			console.log(equipmentName.text)
 			console.log(equipmentLocation.text)
 			equipmentModel.append({
 				"name": equipmentName.text,
+				"category": equipmentCategory.currentText,
 				"location": equipmentLocation.text,
 			})
 			stackView.pop()

@@ -1,6 +1,8 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQml.Models 2.1
+import Qt.labs.settings 1.0
+import extensions 1.0
 
 ApplicationWindow {
 	id: window
@@ -65,39 +67,44 @@ ApplicationWindow {
 			}
 		}
 	}
+
 	
 	StackView {
 		id: stackView
 		initialItem: "HomeForm.ui.qml"
 		anchors.fill: parent
 		Component.onCompleted: {
-			getCityJSON()
+			jsonDataFile.read()
+			var datamodel = JSON.parse(jsonDataFile.content)
+
+			var categoryArray = datamodel["categories"]
+			for(var i in categoryArray) {
+				equipmentCategoryModel.append({"name": categoryArray[i],})
+			}
+		}
+		Component.onDestruction: {
+			var tmpar = {} 
+
+			tmpar["categories"] = []
+			for(var i=0; i<equipmentCategoryModel.count; i++) {
+				tmpar["categories"].push(equipmentCategoryModel.get(i).name)
+			}
+
+			jsonDataFile.content = JSON.stringify(tmpar)
+			jsonDataFile.write()
 		}
 	}
 
 	ListModel {
 		id: equipmentModel
 	}
-
-	function getCityJSON() {
-		var rawFile = new XMLHttpRequest();
-		rawFile.open("GET", "/equipment.json", false);
-		rawFile.onreadystatechange = function () {
-			if(rawFile.readyState === 4) {
-				if(rawFile.status === 200 || rawFile.status == 0) {
-					var result = JSON.parse(rawFile.responseText)
-					equipmentModel.append({
-						"name": result.name + " " + Date(result.dt * 1000),
-						"type": result.main.temp
-					})
-				}
-			} else {
-				console.log("Oops. Something went wrong when trying to read equipment.json")
-			}
-		}
-		rawFile.send(null);
+	ListModel {
+		id: equipmentCategoryModel
 	}
+
+	FileIO {
+		id: jsonDataFile
+		path: "db.json"
+	}
+
 }
-
-
-

@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>globals.qml</file>
+        <file>extensions/FileIO.qml</file>
         <file>Equipment.qml</file>
         <file>HomeForm.ui.qml</file>
         <file>EquipmentForm.ui.qml</file>
@@ -9,6 +9,8 @@
         <file>RunForm.ui.qml</file>
         <file>NewEquipmentForm.ui.qml</file>
         <file>NewEquipment.qml</file>
+        <file>NewEquipmentCategoryForm.ui.qml</file>
+        <file>NewEquipmentCategory.qml</file>
         <file>qtquickcontrols2.conf</file>
     </qresource>
 </RCC>

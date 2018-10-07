@@ -3,14 +3,14 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.11
 
 Page {
-	property alias newEquipment: newEquipment
+	property alias newEquipmentCategory: newEquipmentCategory
     Layout.fillWidth: true
     Layout.fillHeight: true
 
-    title: qsTr("New equipment")
+    title: qsTr("New equipment category")
 	
-	NewEquipment {
-		id: newEquipment
+	NewEquipmentCategory {
+		id: newEquipmentCategory
 	}
 	
 }
