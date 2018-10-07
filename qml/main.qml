@@ -81,16 +81,37 @@ ApplicationWindow {
 			for(var i in categoryArray) {
 				equipmentCategoryModel.append({"name": categoryArray[i],})
 			}
+
+			var equipmentArray = datamodel["equipment"]
+			for(var i in equipmentArray) {
+				var equipmentEntry = equipmentArray[i]
+				equipmentModel.append({
+					name : equipmentEntry['name'],
+					category : equipmentEntry['category'],
+					location : equipmentEntry['location'],
+				})
+			}
+
 		}
 		Component.onDestruction: {
-			var tmpar = {} 
+			var tmpar = {"categories":[],"equipment":[],}
 
-			tmpar["categories"] = []
 			for(var i=0; i<equipmentCategoryModel.count; i++) {
 				tmpar["categories"].push(equipmentCategoryModel.get(i).name)
 			}
 
+			for(var i = 0; i < equipmentModel.count; i++) {
+				var equipmenElement = equipmentModel.get(i)
+				var equipmentEntry = {
+					name : equipmenElement['name'],
+					category : equipmenElement['category'],
+					location : equipmenElement['location'],
+				}
+				tmpar["equipment"].push(equipmentEntry)
+			}
+
 			jsonDataFile.content = JSON.stringify(tmpar)
+			console.log(jsonDataFile.content)
 			jsonDataFile.write()
 		}
 	}

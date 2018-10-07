@@ -20,25 +20,19 @@ Rectangle {
 			id: content
 
 			anchors { left: parent.left; right: parent.right }
-			height: 40
-			width: 40
 			border.width: 2
 			border.color: "black"
-			radius: 2
 			
 			Row {
 				spacing: 10
 				Text {
 					text: name
-					width: 100
 				}
 				Text {
 					text: category
-					width: 100
 				}
 				Text {
 					text: location 
-					width: 100
 				}
 			}
 		}
