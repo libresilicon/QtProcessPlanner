@@ -1,5 +1,6 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
+import QtQml.Models 2.1
 
 ApplicationWindow {
 	id: window
@@ -69,5 +70,34 @@ ApplicationWindow {
 		id: stackView
 		initialItem: "HomeForm.ui.qml"
 		anchors.fill: parent
+		Component.onCompleted: {
+			getCityJSON()
+		}
+	}
+
+	ListModel {
+		id: equipmentModel
+	}
+
+	function getCityJSON() {
+		var rawFile = new XMLHttpRequest();
+		rawFile.open("GET", "/equipment.json", false);
+		rawFile.onreadystatechange = function () {
+			if(rawFile.readyState === 4) {
+				if(rawFile.status === 200 || rawFile.status == 0) {
+					var result = JSON.parse(rawFile.responseText)
+					equipmentModel.append({
+						"name": result.name + " " + Date(result.dt * 1000),
+						"type": result.main.temp
+					})
+				}
+			} else {
+				console.log("Oops. Something went wrong when trying to read equipment.json")
+			}
+		}
+		rawFile.send(null);
 	}
 }
+
+
+

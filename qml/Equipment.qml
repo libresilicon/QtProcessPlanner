@@ -1,13 +1,11 @@
 import QtQuick 2.3
 import QtQml.Models 2.1
+import QtQuick.Layouts 1.11
 
 Rectangle {
-	width: 400
-	height: 200
+    Layout.fillWidth: true
+    Layout.fillHeight: true
 
-	ListModel {
-		id: equipmentModel
-	}
 
 	ListView {
 		anchors.fill: parent
@@ -37,43 +35,6 @@ Rectangle {
 				Text { text: type }
 			}
 		}
-	}
-	Component.onCompleted: {
-		getCityJSON()
-	}
-
-	function getCityJSON() {
-		var rawFile = new XMLHttpRequest();
-		rawFile.open("GET", "/equipment.json", false);
-		rawFile.onreadystatechange = function () {
-			if(rawFile.readyState === 4) {
-				if(rawFile.status === 200 || rawFile.status == 0) {
-					var result = JSON.parse(rawFile.responseText)
-					equipmentModel.append({
-						"name": result.name + " " + Date(result.dt * 1000),
-						"type": result.main.temp
-					})
-				}
-			} else {
-				console.log("Oops. Something went wrong when trying to read equipment.json")
-				equipmentModel.append({
-					"name": "New machine",
-					"type": "Select type"
-				})
-			}
-		}
-		rawFile.send(null);
-
-		//JSON.parse(json);
-		/*if(fileUtils.existsFile("/equipment.json")) {
-			var documentsData = fileUtils.readFile("subfolder/file.json")
-			equipmentModel.append({
-				"name": result.name + " " + Date(result.dt * 1000),
-				"temp": result.main.temp
-			})
-		} else {
-			console.log("Oops. Something went terribly wrong. The equipment database doesn't exist.")
-		}*/
 	}
 }
 
