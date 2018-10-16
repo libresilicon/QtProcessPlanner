@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>extensions/FileIO.qml</file>
+        <file>extensions/ColumnHelper.js</file>
         <file>Equipment.qml</file>
         <file>HomeForm.ui.qml</file>
         <file>EquipmentForm.ui.qml</file>
