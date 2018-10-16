@@ -7,7 +7,7 @@ function(qt_android_build_apk)
     set(options)
     set(oneValueArgs
         TARGET PACKAGE_NAME ANDROID_EXTRA_FILES QML_ROOT_PATH
-        SDK_BUILD_TOOLS_VERSION EXTRA_LIBS)
+        SDK_BUILD_TOOLS_VERSION EXTRA_LIBS )
     set(multiValueArgs)
     cmake_parse_arguments(
         APK "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -86,16 +86,17 @@ function(qt_android_build_apk)
         COMMAND ${CMAKE_COMMAND} -E copy_directory
             ${APK_ANDROID_EXTRA_FILES}/
             ${APK_DIR}
-        COMMAND ${CMAKE_COMMAND} -E make_directory
-            ${APK_DIR}/libs/${CMAKE_ANDROID_ARCH_ABI}
-        COMMAND ${CMAKE_COMMAND} -E copy
-            ${APK_TARGET_OUTPUT_FILENAME}
-            ${APK_DIR}/libs/${CMAKE_ANDROID_ARCH_ABI}
+	COMMAND ${CMAKE_COMMAND} -E make_directory
+	    ${APK_DIR}/libs/${CMAKE_ANDROID_ARCH_ABI}
+	COMMAND ${CMAKE_COMMAND} -E copy
+	    ${APK_TARGET_OUTPUT_FILENAME}
+	    ${APK_DIR}/libs/${CMAKE_ANDROID_ARCH_ABI}
         COMMAND ${QT5_INSTALL_PREFIX}/bin/androiddeployqt
             --verbose
             --output ${APK_DIR}
             --input ${CMAKE_CURRENT_BINARY_DIR}/${APK_TARGET}-config.json
-            --deployment bundled
+	    --android-platform android-27
+	    --deployment bundled
             --gradle
             ${ANDROIDDEPLOYQT_EXTRA_ARGS}
     )

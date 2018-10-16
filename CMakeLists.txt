@@ -9,6 +9,8 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(cmake/qt-android-mk-apk.cmake)
+set(ANDROID_PLATFORM "android-27")
+set(ANDROID_TOOLCHAIN "clang")
 
 add_subdirectory(src)
 
