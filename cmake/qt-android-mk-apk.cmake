@@ -29,6 +29,7 @@ function(qt_android_build_apk)
     # toolchains/ folder without the compiler version
     # APK_NDK_TOOLCHAIN_PREFIX
     file(RELATIVE_PATH APK_NDK_TOOLCHAIN_PREFIX ${CMAKE_ANDROID_NDK} ${CMAKE_CXX_COMPILER})
+    message( STATUS "${APK_NDK_TOOLCHAIN_PREFIX}" )
     string(REPLACE "/" ";" APK_NDK_TOOLCHAIN_PREFIX ${APK_NDK_TOOLCHAIN_PREFIX})
     list(GET APK_NDK_TOOLCHAIN_PREFIX 1 APK_NDK_TOOLCHAIN_PREFIX)
     string(LENGTH "-${CMAKE_ANDROID_NDK_TOOLCHAIN_VERSION}" VERSION_LENGTH)
@@ -98,6 +99,7 @@ function(qt_android_build_apk)
 	    --android-platform android-27
 	    --deployment bundled
             --gradle
+	    --release
             ${ANDROIDDEPLOYQT_EXTRA_ARGS}
     )
 
