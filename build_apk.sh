@@ -39,6 +39,7 @@ $ANDROID_SDK/cmake/3.6.4111459/bin/cmake \
 	-DCMAKE_SYSTEM_NAME=Android \
 	..
 
+make QtProcessPlanner
 make QtProcessPlanner-apk
 cp QtProcessPlanner-apk-build/build/outputs/apk/release/QtProcessPlanner-apk-build-release-unsigned.apk QtProcessPlanner.apk
 $ANDROID_SDK/build-tools/28.0.3/apksigner sign --ks $ANDROID_SDK/key.jks QtProcessPlanner.apk

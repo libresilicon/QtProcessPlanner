@@ -11,16 +11,20 @@ are not allowed in clean rooms because of the contamination risk.
 
 The usual
 
-mkdir build
-cmake ..
-make
+ mkdir build
+
+ cmake ..
+
+ make
 
 ## Building an APK (for Android)
 
 1. Clone this project
 2. Cross compile Qt 5.12 or higher for Android
 3. Create a stand alone Android NDK in the Qt5 install dir:
-sudo /opt/Android/ndk-bundle/build/tools/make_standalone_toolchain.py --arch arm64  --api 24 --install-dir /opt/android-24-qt5/ --force
+
+ sudo /opt/Android/ndk-bundle/build/tools/make_standalone_toolchain.py --arch arm64  --api 24 --install-dir /opt/android-24-qt5/ --force
+
 4. Fix the paths in the build script accordingly to your individual setup
 5. Of course always read a script before executing it, but then you can execute it :-)
 

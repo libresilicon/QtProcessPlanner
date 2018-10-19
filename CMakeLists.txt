@@ -12,11 +12,17 @@ include(cmake/qt-android-mk-apk.cmake)
 
 add_subdirectory(src)
 
+message(STATUS "CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
+message(STATUS "CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
+
 if(ANDROID)
 qt_android_build_apk(
     TARGET ${PROJECT_NAME}
-    PACKAGE_NAME org.libresilicon.QtProcessPlanner
-    QML_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}
-    ANDROID_EXTRA_FILES ${CMAKE_CURRENT_SOURCE_DIR}/android
+    PACKAGE_NAME QtProcessPlanner
+    QML_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/qml
+    ANDROID_EXTRA_FILES ${CMAKE_CURRENT_SOURCE_DIR}/images
 )
 endif()
+
+
+
