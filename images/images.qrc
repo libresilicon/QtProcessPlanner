@@ -6,5 +6,8 @@
         <file>flow.png</file>
         <file>run.svg</file>
         <file>run.png</file>
+        <file>document-open-folder.png</file>
+        <file>document-save.png</file>
+        <file>document-save-as.png</file>
     </qresource>
 </RCC>
