@@ -6,13 +6,13 @@ Page {
     Layout.fillWidth: true
     Layout.fillHeight: true
 
-    title: qsTr("New equipment category")
-	
-	NewEquipmentCategory {
-		id: newEquipmentCategory
-	}
-	
+    title: qsTr("New equipment location")
+
+    NewEquipmentLocation {
+        id: newEquipmentLocation
+    }
 }
+
 
 /*##^## Designer {
     D{i:0;autoSize:true;height:480;width:640}

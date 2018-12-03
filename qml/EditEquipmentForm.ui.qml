@@ -5,14 +5,15 @@ import QtQuick.Layouts 1.11
 Page {
 	Layout.fillWidth: true
 	Layout.fillHeight: true
-	title: qsTr("New equipment")
+	title: qsTr("Edit equipment")
 	ColumnLayout {
 		EquipmentDataFields {
 			id: equipmentDataFields
 		}
-		NewEquipment {
-			id: newEquipment
-			dataFields: equipmentDataFields
+		EditEquipment {
+			id: editEquipment
+			property var eqkey: key
+			property var dataFields: equipmentDataFields
 		}
 	}
 }

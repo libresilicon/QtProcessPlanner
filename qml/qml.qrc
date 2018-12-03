@@ -13,5 +13,16 @@
         <file>NewEquipmentCategoryForm.ui.qml</file>
         <file>NewEquipmentCategory.qml</file>
         <file>qtquickcontrols2.conf</file>
+	<file>HomeFormActionButton.qml</file>
+	<file>ActionButton.qml</file>
+	<file>EditEquipmentForm.ui.qml</file>
+	<file>EditEquipment.qml</file>
+	<file>NewEquipmentLocationForm.ui.qml</file>
+	<file>NewEquipmentLocation.qml</file>
+	<file>EquipmentDataFields.qml</file>
+	<file>FlowsFormListControls.qml</file>
+	<file>FlowsNewStep.qml</file>
+	<file>FlowsNewSubStep.qml</file>
+	<file>TreeDelegate.qml</file>
     </qresource>
 </RCC>

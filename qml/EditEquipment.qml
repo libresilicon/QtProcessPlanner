@@ -5,8 +5,6 @@ import QtQuick.Layouts 1.11
 Rectangle {
 	Layout.fillWidth: true
 	Layout.fillHeight: true
-	property var dataFields
-
 	ColumnLayout {
 		Layout.fillWidth: true
 		Layout.fillHeight: true
@@ -15,13 +13,20 @@ Rectangle {
 			height: 30
 			text: qsTr("Save")
 			onClicked: {
-				var newkey=1;
-				while(equipmentKeyExists(newkey)===true) { newkey=newkey+1; }
+				var eq = getEquipmentFromKey(eqkey)
 				var obj = dataFields.getData()
-				obj["key"] = newkey
-				equipmentModel.append(obj)
+				obj["key"]=eqkey
+				if(eq!==null) {
+					for(var k in obj) {
+						eq[k] = obj[k]
+					}
+				}
 				stackView.pop()
 			}
 		}
+	}
+	Component.onCompleted: {
+		var eq = getEquipmentFromKey(eqkey)
+		if(eq!==null) dataFields.setData(eq)
 	}
 }

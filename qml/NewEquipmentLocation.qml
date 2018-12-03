@@ -13,15 +13,13 @@ Rectangle {
 			Layout.fillWidth: true
 			height: 27
 			spacing: 20
-
 			Label {
 				text: qsTr("Name:")
 				font.pointSize: 10
 				verticalAlignment: Text.AlignVCenter
 			}
-
 			TextField {
-				id: categoryName 
+				id: locationName 
 				width: 160
 				height: 30
 				text: qsTr("")
@@ -40,8 +38,8 @@ Rectangle {
 			height: 30
 			text: qsTr("Save")
 			onClicked: {
-				equipmentCategoryModel.append({
-					"name": categoryName.text,
+				equipmentLocationModel.append({
+					"name": locationName.text,
 				})
 				stackView.pop()
 			}

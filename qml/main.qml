@@ -1,19 +1,23 @@
 import QtQuick 2.9
-import QtQuick.Controls 2.2
-import QtQml.Models 2.1
+import QtQml.Models 2.2
 import Qt.labs.settings 1.0
+import QtQuick.Layouts 1.11
+import QtQuick.Controls 1.4
+import QtQuick.Controls 2.2
+import QtQuick.Controls 2.4
+import QtQuick.Controls.Styles 1.4
+import QtQuick.Dialogs 1.3
+
 import extensions 1.0
 
 ApplicationWindow {
 	id: window
-	visible: true
 	width: 640
 	height: 480
+	visible: true
 	title: qsTr("Stack")
-	
 	header: ToolBar {
 		contentHeight: toolButton.implicitHeight
-		
 		ToolButton {
 			id: toolButton
 			text: stackView.depth > 1 ? "\u25C0" : "\u2630"
@@ -26,106 +30,248 @@ ApplicationWindow {
 				}
 			}
 		}
-		
-		Label {
-			text: stackView.currentItem.title
+		RowLayout {
 			anchors.centerIn: parent
+			Label {
+				text: stackView.currentItem.title
+			}
+			ToolButton {
+				icon.source: "document-save.png"
+				icon.color: "transparent" 
+				visible: ((stackView.depth===2)&&((stackView.currentItem.title==="Equipment")||(stackView.currentItem.title==="Flow")))
+				onClicked: {
+					if(stackView.currentItem.title==="Equipment") {
+						saveMachines("equipment.json")
+					} else if(stackView.currentItem.title==="Flow") {
+						saveFlow("flow.json")
+					}
+				}
+			}
+			ToolButton {
+				icon.source: "document-open-folder.png"
+				icon.color: "transparent" 
+				visible: (stackView.depth===2)
+				onClicked: {
+					fileOpenDialog.open()
+				}
+				FileDialog {
+					id: fileOpenDialog
+					title: qsTr("Open file")
+					onAccepted: {
+						console.log("You chose: " + fileOpenDialog.fileUrls)
+						Qt.quit()
+						/*if(stackView.currentItem.title==="Equipment") {
+							console.log(fileDialog.fileUrls)
+						} else if(stackView.currentItem.title==="Flow") {
+						}*/
+					}
+					nameFilters: [ "JSON files (*.json)", "All files (*)" ]
+				}
+			}
+			ToolButton {
+				icon.source: "document-save-as.png"
+				icon.color: "transparent" 
+				visible: ((stackView.depth===2)&&((stackView.currentItem.title==="Equipment")||(stackView.currentItem.title==="Flow")))
+				onClicked: {
+					fileSaveAsDialog.open()
+				}
+				FileDialog {
+					id: fileSaveAsDialog
+					title: qsTr("Save file")
+					onAccepted: {
+						console.log("You chose: " + fileSaveAsDialog.fileUrls)
+						Qt.quit()
+					}
+					nameFilters: [ "JSON files (*.json)", "All files (*)" ]
+				}
+			}
 		}
 	}
-	
 	Drawer {
 		id: drawer
-		width: window.width * 0.66
-		height: window.height
-		
+		y: header.height
+		width: window.width * 0.3
+		height: window.height - header.height
 		Column {
-			anchors.fill: parent
-			
+			anchors.centerIn: parent
+			Layout.fillWidth: true
+			Layout.fillHeight: true
 			ItemDelegate {
 				text: qsTr("Equipment")
-				width: parent.width
 				onClicked: {
-					stackView.push("equipment.ui.qml")
+					stackView.push("qrc:/EquipmentForm.ui.qml")
 					drawer.close()
 				}
 			}
 			ItemDelegate {
 				text: qsTr("Flows")
-				width: parent.width
 				onClicked: {
-					stackView.push("flows.ui.qml")
+					stackView.push("qrc:/FlowsForm.ui.qml")
 					drawer.close()
 				}
 			}
 			ItemDelegate {
 				text: qsTr("Run")
-				width: parent.width
 				onClicked: {
-					stackView.push("run.ui.qml")
+					stackView.push("qrc:/RunForm.ui.qml")
 					drawer.close()
 				}
 			}
 		}
 	}
-
-	
 	StackView {
 		id: stackView
-		initialItem: "HomeForm.ui.qml"
+		initialItem: "qrc:/HomeForm.ui.qml"
 		anchors.fill: parent
+		Layout.fillWidth: true
+		Layout.fillHeight: true
 		Component.onCompleted: {
-			jsonDataFile.read()
-			var datamodel = JSON.parse(jsonDataFile.content)
-
-			var categoryArray = datamodel["categories"]
-			for(var i in categoryArray) {
-				equipmentCategoryModel.append({"name": categoryArray[i],})
-			}
-
-			var equipmentArray = datamodel["equipment"]
-			for(var i in equipmentArray) {
-				var equipmentEntry = equipmentArray[i]
-				equipmentModel.append({
-					name : equipmentEntry['name'],
-					category : equipmentEntry['category'],
-					location : equipmentEntry['location'],
-				})
-			}
-
+			readFlow("flow.json")
+			readMachines("equipment.json")
 		}
 		Component.onDestruction: {
-			var tmpar = {"categories":[],"equipment":[],}
-
-			for(var i=0; i<equipmentCategoryModel.count; i++) {
-				tmpar["categories"].push(equipmentCategoryModel.get(i).name)
-			}
-
-			for(var i = 0; i < equipmentModel.count; i++) {
-				var equipmenElement = equipmentModel.get(i)
-				var equipmentEntry = {
-					name : equipmenElement['name'],
-					category : equipmenElement['category'],
-					location : equipmenElement['location'],
-				}
-				tmpar["equipment"].push(equipmentEntry)
-			}
-
-			jsonDataFile.content = JSON.stringify(tmpar)
-			console.log(jsonDataFile.content)
-			jsonDataFile.write()
+			saveFlow("flow.json")
+			saveMachines("equipment.json")
 		}
 	}
-
 	ListModel {
 		id: equipmentModel
 	}
 	ListModel {
 		id: equipmentCategoryModel
 	}
-
-	FileIO {
-		id: jsonDataFile
-		path: "db.json"
+	ListModel {
+		id: equipmentLocationModel
 	}
+	TreeModel {
+		id: flowModel
+	}
+	ItemSelectionModel {
+		id: flowModelSelection
+		model: flowModel
+	}
+	FileIO {
+		id: dataFile
+	}
+	function equipmentKeyExists(i) {
+		for(var j = 0; j < equipmentModel.count; j++) {
+			var equipmenElement = equipmentModel.get(j)
+			var key = equipmenElement['key']
+			if(i===key) return true;
+		}
+		return false
+	}
+	function getEquipmentFromKey(i) {
+		for(var j = 0; j < equipmentModel.count; j++) {
+			var equipmenElement = equipmentModel.get(j)
+			var key = equipmenElement['key']
+			if(i===key) { return equipmenElement }
+		}
+		return null;
+	}
+	function flowStepKeyExists(i) {
+		for(var j = 0; j < flowModel.count(); j++) {
+			var flowElement = flowModel.get(j)
+			var key = parseInt(flowElement.dataMember(0))
+			if(i===key) return true;
+		}
+		return false
+	}
+	function flowSubStepKeyExists(pk,i) {
+		var j
+		var k
+		var key
+		var flowElement 
+		var subKey
+		var flowSubElement 
+		var flowSubSteps
+		for(j = 0; j < flowModel.count(); j++) {
+			flowElement = flowModel.get(j)
+			key = parseInt(flowElement.dataMember(0))
+			if(parseInt(pk)===key) {
+				for(k=0; k<flowElement.childCount(); k++) {
+					flowSubElement = flowElement.child(k)
+					subKey = parseInt(flowSubElement.dataMember(0))
+					console.log(subKey)
+					if(i===subKey) { return true }
+				}
+			}
+		}
+		return false
+	}
+	function readMachines(fileName) {
+		dataFile.path=fileName
 
+		dataFile.read()
+		var i = 0
+		var c = 0
+		var subStepArray
+		var subStepEntry
+		var datamodel = JSON.parse(dataFile.content)
+		var flowArray = datamodel["flow"]
+
+		var categoryArray = datamodel["categories"]
+		for(i in categoryArray) {
+			equipmentCategoryModel.append({"name": categoryArray[i],})
+		}
+		var locationArray = datamodel["location"]
+		for(i in locationArray) {
+			equipmentLocationModel.append({"name": locationArray[i],})
+		}
+		var equipmentArray = datamodel["equipment"]
+		for(i in equipmentArray) {
+			var equipmentEntry = equipmentArray[i]
+			equipmentModel.append({
+				key : equipmentEntry['key'],
+				shortname : equipmentEntry['shortname'],
+				name : equipmentEntry['name'],
+				category : equipmentEntry['category'],
+				location : equipmentEntry['location'],
+			})
+		}
+
+	}
+	function saveMachines(fileName) {
+		dataFile.path=fileName
+		var i
+		var j
+		var obj
+		var substp
+		var tmpobj 
+		var tmpar = {"categories":[],"equipment":[],"location":[],flow:[]}
+		for(i = 0; i < equipmentCategoryModel.count; i++) {
+			tmpar["categories"].push(equipmentCategoryModel.get(i).name)
+		}
+		for(i = 0; i < equipmentLocationModel.count; i++) {
+			tmpar["location"].push(equipmentLocationModel.get(i).name)
+		}
+		for(i = 0; i < equipmentModel.count; i++) {
+			var equipmenElement = equipmentModel.get(i)
+			var equipmentEntry = {
+				key : equipmenElement.key,
+				shortname : equipmenElement.shortname,
+				name : equipmenElement.name,
+				category : equipmenElement.category,
+				location : equipmenElement.location,
+			}
+			tmpar["equipment"].push(equipmentEntry)
+		}
+		dataFile.content = JSON.stringify(tmpar)
+		dataFile.write()
+	}
+	function readFlow(fileName) {
+		dataFile.path = fileName
+		dataFile.read()
+		flowModel.setMapping(0,"key")
+		flowModel.setMapping(1,"name")
+		flowModel.setMapping(2,"equipment")
+		flowModel.setMapping(3,"description")
+		flowModel.setJSON(dataFile.content)
+	}
+	function saveFlow(fileName) {
+		dataFile.path = fileName
+		dataFile.content = flowModel.getJSON()
+		dataFile.write()
+	}
 }
+

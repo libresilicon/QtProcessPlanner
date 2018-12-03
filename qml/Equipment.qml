@@ -1,8 +1,11 @@
-import QtQuick 2.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 import QtQml.Models 2.1
+import Qt.labs.settings 1.0
+import extensions 1.0
 import QtQuick.Layouts 1.11
 
-import "/extensions/ColumnHelper.js" as ColumnHelper
+import "qrc:/extensions/ColumnHelper.js" as ColumnHelper
 
 Rectangle {
 	Layout.fillWidth: true
@@ -16,82 +19,165 @@ Rectangle {
 		Layout.fillHeight: true
 		anchors.fill: parent
 		model: equipmentModel
-		property var columnWidths: ColumnHelper.calcColumnWidths(150, equipmentModel, listOfMachines)
+		property int minColumnWidth: 200
+		property var columnWidths: ColumnHelper.calcColumnWidths(listOfMachines.minColumnWidth, equipmentModel, listOfMachines)
 		delegate: listOfMachinesContent
 		header: listOfMachinesHeader
 	}
 
 	Component {
 		id: listOfMachinesHeader
-		Row {
+		RowLayout {
 			Layout.fillWidth: true
-			Rectangle {
-				id: nameHeader
-				width: listOfMachines.columnWidths['name']
+			spacing: 1
+			/*Rectangle {
+				width: listOfMachines.columnWidths['key']?listOfMachines.columnWidths['key']:listOfMachines.minColumnWidth
 				height: 30
 				border.width: 2
 				border.color: "black"
 				Text {
+					x: 5
+					y: 5
+					text: "Machine ID" 
+					font.bold: true
+					font.pixelSize: 14
+				}
+			}*/
+			Rectangle {
+				width: listOfMachines.columnWidths['shortname']?listOfMachines.columnWidths['shortname']:listOfMachines.minColumnWidth
+				height: 30
+				border.width: 2
+				border.color: "black"
+				Text {
+					x: 5
+					y: 5
+					text: "Machine short name" 
+					font.bold: true
+					font.pixelSize: 14
+				}
+			}
+			Rectangle {
+				width: listOfMachines.columnWidths['name']?listOfMachines.columnWidths['name']:listOfMachines.minColumnWidth
+				height: 30
+				border.width: 2
+				border.color: "black"
+				Text {
+					x: 5
+					y: 5
 					text: "Machine name" 
+					font.bold: true
+					font.pixelSize: 14
 				}
 			}
 			Rectangle {
-				id: categoryHeader
-				width: listOfMachines.columnWidths['category']
+				width: listOfMachines.columnWidths['category']?listOfMachines.columnWidths['category']:listOfMachines.minColumnWidth
 				height: 30
 				border.width: 2
 				border.color: "black"
 				Text {
+					x: 5
+					y: 5
 					text: "Machine category"
+					font.bold: true
+					font.pixelSize: 14
 				}
 			}
 			Rectangle {
-				id: locationHeader
-				width: listOfMachines.columnWidths['location']
+				width: listOfMachines.columnWidths['location']?listOfMachines.columnWidths['location']:listOfMachines.minColumnWidth
 				height: 30
 				border.width: 2
 				border.color: "black"
 				Text {
+					x: 5
+					y: 5
 					text: "Machine location"
+					font.bold: true
+					font.pixelSize: 14
 				}
 			}
 		}
 	}
-
 	Component {
 		id: listOfMachinesContent
-		Row {
+		RowLayout {
 			Layout.fillWidth: true
-			Rectangle {
-				width: listOfMachines.columnWidths['name']
-				height: 30
+			spacing: 1
+			/*Rectangle {
+				width: listOfMachines.columnWidths['key']
+				height: 40
 				border.width: 2
 				border.color: "black"
 				Text {
+					x: 5
+					y: 5
+					text: key 
+				}
+			}*/
+			Rectangle {
+				width: listOfMachines.columnWidths['shortname']
+				height: 40
+				border.width: 2
+				border.color: "black"
+				Text {
+					x: 5
+					y: 5
+					text: shortname
+				}
+			}
+			Rectangle {
+				width: listOfMachines.columnWidths['name']
+				height: 40
+				border.width: 2
+				border.color: "black"
+				Text {
+					x: 5
+					y: 5
 					text: name
 				}
 			}
 			Rectangle {
 				width: listOfMachines.columnWidths['category']
-				height: 30
+				height: 40
 				border.width: 2
 				border.color: "black"
 				Text {
+					x: 5
+					y: 5
 					text: category
 				}
 			}
 			Rectangle {
 				width: listOfMachines.columnWidths['location']
-				height: 30
+				height: 40
 				border.width: 2
 				border.color: "black"
 				Text {
+					x: 5
+					y: 5
 					text: location
+				}
+			}
+			Rectangle {
+				width: 60 
+				height: 40
+				border.width: 2
+				border.color: "black"
+				Button {
+					x: 5 
+					y: 5
+					width: 50 
+					height: 25
+					text: qsTr("Edit")
+					onClicked: {
+						var component = Qt.createComponent("qrc:/EditEquipmentForm.ui.qml");
+						if (component.status===Component.Ready) {
+							component.key = key
+							stackView.push(component)
+						}
+					}
 				}
 			}
 		}
 	}
-
-
 }
 
