@@ -10,20 +10,24 @@ void FileIO::read()
 		return;
 	}
 	QString dataPrefix = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+	dataPrefix =QDir(dataPrefix).filePath("QtProcessPlanner");
+	if(!QDir(dataPrefix).exists(dataPrefix)) {
+		if(!QDir(dataPrefix).mkdir(dataPrefix)) return;
+	}
 	QString dataBasePath = QDir(dataPrefix).filePath(m_path);
-
-
-
 	QFile file(dataBasePath);
 	if(!file.exists()) {
 		qWarning() << "Does not exits: " << dataBasePath;
-		return;
+		qWarning() << "Copying " << ":/" << m_path << " to " << dataBasePath;
+		QFile::copy(":/"+m_path, dataBasePath);		
 	}
+	qWarning() << "Opening: " << dataBasePath;
 	if(file.open(QIODevice::ReadOnly)) {
 		QTextStream stream(&file);
 		m_content = stream.readAll();
 		emit contentChanged(m_content);
 	}
+	file.close();
 }
 
 void FileIO::write()
@@ -32,18 +36,22 @@ void FileIO::write()
 		return;
 	}
 	QString dataPrefix = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+	dataPrefix = QDir(dataPrefix).filePath("QtProcessPlanner");
+	if(!QDir(dataPrefix).exists(dataPrefix)) {
+		if(!QDir(dataPrefix).mkdir(dataPrefix)) return;
+	}
 	QString dataBasePath = QDir(dataPrefix).filePath(m_path);
-
 	QFile file(dataBasePath);
+	qWarning() << "Writing to: " << dataBasePath;
 	if(file.open(QIODevice::WriteOnly)) {
 		QTextStream stream(&file);
 		stream << m_content;
 	}
+	file.close();
 }
 
 void FileIO::setPath(QString t)
 {
-	qDebug() << t;
 	m_path = t;
 }
 
@@ -61,4 +69,3 @@ void FileIO::setContent(QString c)
 {
 	m_content = c;
 }
-
