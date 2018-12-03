@@ -96,7 +96,7 @@ function(qt_android_build_apk)
             --verbose
             --output ${APK_DIR}
             --input ${CMAKE_CURRENT_BINARY_DIR}/${APK_TARGET}-config.json
-	    --android-platform android-27
+	    --android-platform ${ANDROID_PLATFORM}
 	    --deployment bundled
             --gradle
 	    --release
