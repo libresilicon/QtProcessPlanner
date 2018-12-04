@@ -20,13 +20,22 @@ class TreeItem : public QObject
 		Q_INVOKABLE TreeItem *child(int row);
 		Q_INVOKABLE int childCount() const;
 		int columnCount() const;
+
 		Q_INVOKABLE QVariant data(int column) const;
-		int row() const;
+		Q_INVOKABLE void setData(int i, QString s);
+
+		Q_INVOKABLE int row() const;
+		Q_INVOKABLE int column() const;
 		TreeItem *parentItem();
 
 		Q_INVOKABLE void append(QList<QVariant> data);
 
-		Q_INVOKABLE QString dataMember(int i);
+
+	signals:
+		void modelReset();
+
+	public slots:
+		void onModelReset();
 
 	private:
 		QList<TreeItem*> m_childItems;

@@ -53,13 +53,19 @@ void TreeModel::append(TreeItem *node, QVariantMap map)
 
 void TreeModel::setMapping(int i, QString s)
 {
-	//TreeItem *olditem;
+	TreeItem *olditem = nullptr;
 	m_roleNameMapping[i]=s.toUtf8();
 	QList<QVariant> data;
 	foreach(QByteArray v, m_roleNameMapping) data.append(v);
-	//if(rootItem!=nullptr) olditem = rootItem;
+	if(rootItem!=nullptr) olditem = rootItem;
 	rootItem = new TreeItem(data);
-	//delete olditem;
+	if(olditem!=nullptr) delete olditem;
+	connect(rootItem, SIGNAL(modelReset), this, SLOT(onModelReset));
+	emit modelReset();
+}
+
+void TreeModel::onModelReset()
+{
 	emit modelReset();
 }
 
@@ -113,7 +119,7 @@ QJsonObject TreeModel::convertTreeItemToJSON(TreeItem* item)
 	QJsonArray childFlowObjects;
 	if(item!=nullptr) {
 		for(int i=0; i<item->columnCount(); i++) {
-			flowObject.insert(m_roleNameMapping[i], item->dataMember(i));
+			flowObject.insert(m_roleNameMapping[i], item->data(i).toString());
 		}
 		if(item->childCount()>0) {
 			for(int j=0; j<item->childCount(); j++) {
@@ -152,12 +158,9 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 	if (!index.isValid())
 		return QVariant();
 
-	//if (role != TreeModelRoleName && role != TreeModelRoleKey)
-	//	return QVariant();
-
 	TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
 
-	return item->data(role - Qt::UserRole - 1);
+	return item->data(role);
 }
 
 Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
@@ -178,8 +181,6 @@ QVariant TreeModel::headerData(int section, Qt::Orientation orientation, int rol
 
 QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent) const
 {
-	qDebug() << __FUNCTION__ << " " <<  row << " " << column;
-
 	if (!hasIndex(row, column, parent))
 		return QModelIndex();
 

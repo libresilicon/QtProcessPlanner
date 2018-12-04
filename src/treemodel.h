@@ -41,6 +41,12 @@ class TreeModel : public QAbstractItemModel
 		Q_INVOKABLE QString getJSON();
 		Q_INVOKABLE TreeItem* getItem(const QModelIndex &index) const;
 
+	signals:
+		void modelReset();
+
+	public slots:
+		void onModelReset();
+
 	private:
 		QVariant newCustomType(const QString &text, int position);
 		QJsonObject convertTreeItemToJSON(TreeItem* item);
@@ -48,10 +54,6 @@ class TreeModel : public QAbstractItemModel
 
 		TreeItem *rootItem;
 		QHash<int, QByteArray> m_roleNameMapping;
-
-	signals:
-		void modelReset();
-
 };
 
 #endif // TREEMODEL_H

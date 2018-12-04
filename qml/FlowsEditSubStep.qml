@@ -9,7 +9,11 @@ Page {
 	property var flow
 	padding: 20
 	Component.onCompleted: {
-		console.log("Completed Running!")
+		dataFields.setData({
+			"name": root.flow.data(1),
+			"equipment": root.flow.data(2),
+			"description": root.flow.data(3),
+		})
 	}
 	ColumnLayout {
 		Layout.fillWidth: true
@@ -23,11 +27,10 @@ Page {
 			height: 30
 			text: qsTr("Save")
 			onClicked: {
-				var newkey=1;
-				while(flowSubStepKeyExists(flow.data(0),newkey)===true) { newkey=newkey+1; }
 				var newdata=dataFields.getData()
-				newdata["key"]=newkey
-				flowModel.append(root.flow,newdata)
+				flow.setData(1, newdata["name"])
+				flow.setData(2, newdata["equipment"])
+				flow.setData(3, newdata["description"])
 				stackView.pop()
 			}
 		}

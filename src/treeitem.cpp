@@ -7,9 +7,6 @@
 #include <QStringList>
 #include "treeitem.h"
 
-#define TOROLE(x) (x-Qt::UserRole-1)
-#define FROMROLE(x) (x+Qt::UserRole+1)
-
 TreeItem::TreeItem(const QList<QVariant> &data, TreeItem *parent)
 {
 	m_parentItem = parent;
@@ -29,11 +26,15 @@ TreeItem::~TreeItem()
 void TreeItem::appendChild(TreeItem *item)
 {
 	m_childItems.append(item);
+	connect(item, SIGNAL(modelReset), this, SLOT(onModelReset));
+	emit modelReset();
 }
 
-QString TreeItem::dataMember(int i)
+void TreeItem::setData(int i, QString s)
 {
-	return ((-1<i)&& (i<m_itemData.count()))?m_itemData[i].toString():QString();
+	if((-1<i)&&(i<m_itemData.count()))
+		m_itemData[i]=s;
+	emit modelReset();
 }
 
 TreeItem *TreeItem::child(int row)
@@ -54,11 +55,12 @@ int TreeItem::columnCount() const
 void TreeItem::append(QList<QVariant> data)
 {
 	appendChild(new TreeItem(data,this));
+	emit modelReset();
 }
 
 QVariant TreeItem::data(int column) const
 {
-	return m_itemData.value(FROMROLE(column));
+	return (column<m_itemData.count())?m_itemData.value(column):QVariant();
 }
 
 TreeItem *TreeItem::parentItem()
@@ -68,7 +70,25 @@ TreeItem *TreeItem::parentItem()
 
 int TreeItem::row() const
 {
-	if (m_parentItem)
+	if (m_parentItem) {
 		return m_parentItem->m_childItems.indexOf(const_cast<TreeItem*>(this));
+	}
 	return 0;
 }
+
+int TreeItem::column() const
+{
+	int ret=0;
+	TreeItem *parent = m_parentItem;
+	while (parent!=nullptr) {
+		parent = parent->parentItem();
+		ret++;
+	}
+	return ret;
+}
+
+void TreeItem::onModelReset()
+{
+	emit modelReset();
+}
+

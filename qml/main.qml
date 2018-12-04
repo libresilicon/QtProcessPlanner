@@ -58,7 +58,6 @@ ApplicationWindow {
 					id: fileOpenDialog
 					title: qsTr("Open file")
 					onAccepted: {
-						console.log("You chose: " + fileOpenDialog.fileUrls)
 						Qt.quit()
 						/*if(stackView.currentItem.title==="Equipment") {
 							console.log(fileDialog.fileUrls)
@@ -79,7 +78,6 @@ ApplicationWindow {
 					id: fileSaveAsDialog
 					title: qsTr("Save file")
 					onAccepted: {
-						console.log("You chose: " + fileSaveAsDialog.fileUrls)
 						Qt.quit()
 					}
 					nameFilters: [ "JSON files (*.json)", "All files (*)" ]
@@ -172,7 +170,7 @@ ApplicationWindow {
 	function flowStepKeyExists(i) {
 		for(var j = 0; j < flowModel.count(); j++) {
 			var flowElement = flowModel.get(j)
-			var key = parseInt(flowElement.dataMember(0))
+			var key = parseInt(flowElement.data(0))
 			if(i===key) return true;
 		}
 		return false
@@ -187,12 +185,11 @@ ApplicationWindow {
 		var flowSubSteps
 		for(j = 0; j < flowModel.count(); j++) {
 			flowElement = flowModel.get(j)
-			key = parseInt(flowElement.dataMember(0))
+			key = parseInt(flowElement.data(0))
 			if(parseInt(pk)===key) {
 				for(k=0; k<flowElement.childCount(); k++) {
 					flowSubElement = flowElement.child(k)
-					subKey = parseInt(flowSubElement.dataMember(0))
-					console.log(subKey)
+					subKey = parseInt(flowSubElement.data(0))
 					if(i===subKey) { return true }
 				}
 			}

@@ -27,18 +27,41 @@ RowLayout {
 		text: qsTr("Add sub-step")
 		onClicked: {
 			if((root.page!==null)&&(root.flow!==null)) {
-				if (page.status===Component.Ready) {
+				if (root.page.status===Component.Ready) {
 					stackView.push(root.page, {"flow": root.flow})
 				}
 			}
 		}
+		enabled: false
+	}
+	Button {
+		id: editSubStepButton
+		width: 50 
+		height: 25
+		text: qsTr("Edit sub-step")
+		onClicked: {
+			if((root.page!==null)&&(root.flow!==null)) {
+				//if (root.page.status===Component.Ready) {
+				stackView.push(root.page, {"flow": root.flow})
+				//}
+			}
+		}
+		enabled: false
 	}
 	function handleSelection(o) {
-		root.flow = o 
-		addSubStepButton.text = "Add sub-step to "+o.dataMember(1)
-		delete root.page
-		root.page = Qt.createComponent("qrc:/FlowsNewSubStep.qml");
-		addSubStepButton.enabled =  true
+		if(o.column()==1) {
+			root.flow = o
+			addSubStepButton.text = "Add sub step"
+			delete root.page
+			root.page = Qt.createComponent("qrc:/FlowsNewSubStep.qml");
+		} else if(o.column()==2) {
+			root.flow = o
+			editSubStepButton.text = "Edit sub step"
+			delete root.page
+			root.page = Qt.createComponent("qrc:/FlowsEditSubStep.qml");
+		}
+		addSubStepButton.enabled = (o.column()==1)
+		editSubStepButton.enabled = (o.column()==2) 
 	}
 }
 

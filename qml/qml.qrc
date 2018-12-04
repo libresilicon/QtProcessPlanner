@@ -23,6 +23,8 @@
 	<file>FlowsFormListControls.qml</file>
 	<file>FlowsNewStep.qml</file>
 	<file>FlowsNewSubStep.qml</file>
+	<file>FlowSubStepDataField.qml</file>
+	<file>FlowsEditSubStep.qml</file>
 	<file>TreeDelegate.qml</file>
     </qresource>
 </RCC>

@@ -25,10 +25,6 @@ Page {
 				model: flowModel
 			}
 			TableViewColumn {
-				role: "key"
-				title: "Key"
-			}
-			TableViewColumn {
 				role: "name"
 				title: "Name"
 			}
@@ -43,7 +39,7 @@ Page {
 			Connections {
 				target: flowModel 
 				onDataChanged: {
-					console.log("QML got data changed signal, row:", topLeft.row, "item:", topLeft.data, "roles:", roles)
+					//console.log("QML got data changed signal, row:", topLeft.row, "item:", topLeft.data, "roles:", roles)
 				}
 			}
 
@@ -58,8 +54,6 @@ Page {
         target: flowTable
         onClicked: {
 		flowControls.handleSelection(flowTable.model.getItem(index))
-		//flowTable.expand(index)
-		//console.log(flowTable.model.getItem(index))
 	}
     }
 }
