@@ -24,7 +24,7 @@ void TreeModel::append(QVariantMap map) {
 		name=m_roleNameMapping[i];
 		data[i]=map[name].toString();
 	}
-	rootItem->appendChild(new TreeItem(data.toList(), rootItem));
+	rootItem->appendChild(new TreeItem(data, rootItem));
 	emit modelReset();
 }
 
@@ -47,20 +47,27 @@ void TreeModel::append(TreeItem *node, QVariantMap map)
 		name=m_roleNameMapping[i];
 		data[i]=map[name].toString();
 	}
-	node->appendChild(new TreeItem(data.toList(), node));
+	node->appendChild(new TreeItem(data, node));
 	emit modelReset();
 }
 
 void TreeModel::setMapping(int i, QString s)
 {
-	TreeItem *olditem = nullptr;
 	m_roleNameMapping[i]=s.toUtf8();
-	QList<QVariant> data;
-	foreach(QByteArray v, m_roleNameMapping) data.append(v);
-	if(rootItem!=nullptr) olditem = rootItem;
-	rootItem = new TreeItem(data);
-	if(olditem!=nullptr) delete olditem;
-	connect(rootItem, SIGNAL(modelReset), this, SLOT(onModelReset));
+
+	if(rootItem==nullptr) {
+		QVector<QVariant> data(m_roleNameMapping.count());
+		int j=0;
+		foreach(QByteArray v, m_roleNameMapping) {
+		       	data[j]=v;
+			j++;
+		}
+		rootItem = new TreeItem(data);
+		connect(rootItem, SIGNAL(modelReset()), this, SLOT(onModelReset()));
+	} else {
+		rootItem->setMapping(i,s);
+	}
+
 	emit modelReset();
 }
 
@@ -98,7 +105,7 @@ TreeItem* TreeModel::convertQJsonObjectToTreeItem(TreeItem *parent, QJsonObject 
 		data[i]=o[name].toString();
 	}
 
-	ret = new TreeItem(data.toList(),parent);
+	ret = new TreeItem(data,parent);
 
 	QJsonValue v = o["children"];
 	if(v.isArray()) {

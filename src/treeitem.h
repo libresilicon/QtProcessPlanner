@@ -12,7 +12,7 @@ class TreeItem : public QObject
 
 	public:
 		explicit TreeItem();
-		explicit TreeItem(const QList<QVariant> &data, TreeItem *parentItem = 0);
+		explicit TreeItem(const QVector<QVariant> &data, TreeItem *parentItem = 0);
 		~TreeItem();
 
 		void appendChild(TreeItem *child);
@@ -28,8 +28,9 @@ class TreeItem : public QObject
 		Q_INVOKABLE int column() const;
 		TreeItem *parentItem();
 
-		Q_INVOKABLE void append(QList<QVariant> data);
+		Q_INVOKABLE void append(QVector<QVariant> data);
 
+		void setMapping(int i, QString s);
 
 	signals:
 		void modelReset();
@@ -39,7 +40,7 @@ class TreeItem : public QObject
 
 	private:
 		QList<TreeItem*> m_childItems;
-		QList<QVariant> m_itemData;
+		QVector<QVariant> m_itemData;
 		TreeItem *m_parentItem;
 
 

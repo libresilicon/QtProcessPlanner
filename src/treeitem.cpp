@@ -7,7 +7,7 @@
 #include <QStringList>
 #include "treeitem.h"
 
-TreeItem::TreeItem(const QList<QVariant> &data, TreeItem *parent)
+TreeItem::TreeItem(const QVector<QVariant> &data, TreeItem *parent)
 {
 	m_parentItem = parent;
 	m_itemData = data;
@@ -26,8 +26,18 @@ TreeItem::~TreeItem()
 void TreeItem::appendChild(TreeItem *item)
 {
 	m_childItems.append(item);
-	connect(item, SIGNAL(modelReset), this, SLOT(onModelReset));
+	connect(item, SIGNAL(modelReset()), this, SLOT(onModelReset()));
 	emit modelReset();
+}
+
+void TreeItem::setMapping(int i, QString s)
+{
+	if(m_itemData.size()<(i+1)) {
+		m_itemData.reserve(i+1);
+		m_itemData.resize(i+1);
+	}
+	m_itemData[i]=QVariant(s);
+	foreach(TreeItem *item, m_childItems) if(item!=nullptr) item->setMapping(i, s);
 }
 
 void TreeItem::setData(int i, QString s)
@@ -52,7 +62,7 @@ int TreeItem::columnCount() const
 	return m_itemData.count();
 }
 
-void TreeItem::append(QList<QVariant> data)
+void TreeItem::append(QVector<QVariant> data)
 {
 	appendChild(new TreeItem(data,this));
 	emit modelReset();
@@ -60,7 +70,7 @@ void TreeItem::append(QList<QVariant> data)
 
 QVariant TreeItem::data(int column) const
 {
-	return (column<m_itemData.count())?m_itemData.value(column):QVariant();
+	return ((-1<column)&&(column<m_itemData.count()))?m_itemData.value(column):QVariant();
 }
 
 TreeItem *TreeItem::parentItem()
@@ -70,10 +80,7 @@ TreeItem *TreeItem::parentItem()
 
 int TreeItem::row() const
 {
-	if (m_parentItem) {
-		return m_parentItem->m_childItems.indexOf(const_cast<TreeItem*>(this));
-	}
-	return 0;
+	return (m_parentItem==nullptr)?0:m_parentItem->m_childItems.indexOf(const_cast<TreeItem*>(this));
 }
 
 int TreeItem::column() const
